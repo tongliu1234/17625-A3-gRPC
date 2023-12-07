@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+message Post {
+  string title = 1;
+  string text = 2;
+  string video_url = 3;
+  string image_url = 4;
+  string author = 5;
+  int32 score = 6;
+  enum State {
+    NORMAL = 0;
+    LOCKED = 1;
+    HIDDEN = 2;
+  }
+  State post_state = 7;
+  int64 publication_date = 8;
+}

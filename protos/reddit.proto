@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+import "User.proto";
+import "Post.proto";
+import "Comment.proto";
+import "Subreddit.proto";  // if applicable
+
+service RedditService {
+  rpc CreatePost(Post) returns (Post);
+  rpc UpvotePost(Post) returns (Post);
+  rpc DownvotePost(Post) returns (Post);
+  rpc RetrievePostContent(User) returns (Post);
+  rpc CreateComment(Comment) returns (Comment);
+  rpc UpvoteComment(Comment) returns (Comment);
+  rpc DownvoteComment(Comment) returns (Comment);
+  rpc RetrieveUpvotedComments(PostRequest) returns (UpvotedCommentsResponse);
+  rpc ExpandCommentBranch(CommentBranchRequest) returns (CommentBranchResponse);
+  
+  // Extra Credit
+  rpc MonitorUpdates(UpdatesRequest) returns (stream UpdatesResponse);
+}
+
+message PostRequest {
+  string post_id = 1;
+}
+
+message UpvotedCommentsResponse {
+  repeated Comment upvoted_comments = 1;
+}
+
+message CommentBranchRequest {
+  string comment_id = 1;
+  int32 depth = 2;
+}
+
+message CommentBranchResponse {
+  repeated CommentThread comment_threads = 1;
+
+  message CommentThread {
+    Comment main_comment = 1;
+    repeated Comment replies = 2;
+  }
+}
+
+message UpdatesRequest {
+  string post_id = 1;
+  repeated string comment_ids = 2;
+}
+
+message UpdatesResponse {
+  int32 post_score = 1;
+  repeated CommentUpdate comment_updates = 2;
+
+  message CommentUpdate {
+    string comment_id = 1;
+    int32 score = 2;
+  }
+}
