@@ -43,12 +43,8 @@ class RedditServicer(RedditServiceServicer):
         post.score -= 1
         return post
 
-    def RetrieveAllComments(self, request, context):
-        return CommentResponse(comments=[comment for comment in comments.values()])
-
     def RetrievePostContent(self, request, context):
-        # return posts[request.post_id]
-        pass
+        return posts[request.post_id]
 
     def CreateComment(self, request, context):
         # Assuming a unique comment_id is generated for each comment
@@ -56,6 +52,9 @@ class RedditServicer(RedditServiceServicer):
         request.comment_id = comment_id
         comments[comment_id] = request
         return request
+
+    def RetrieveAllComments(self, request, context):
+        return CommentResponse(comments=[comment for comment in comments.values()])
 
     def UpvoteComment(self, request, context):
         comment = comments[request.comment_id]
@@ -72,7 +71,7 @@ class RedditServicer(RedditServiceServicer):
         l = [
             comment
             for comment in comments.values()
-            if comment.under_post and comment.parent_id == request.post_id
+            if comment.parent_post_id == request.post_id
         ]
         # print(bubble_sort(l, 2))
         return UpvotedCommentsResponse(

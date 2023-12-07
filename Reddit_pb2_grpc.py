@@ -36,7 +36,7 @@ class RedditServiceStub(object):
                 )
         self.RetrievePostContent = channel.unary_unary(
                 '/RedditService/RetrievePostContent',
-                request_serializer=Reddit__pb2.User.SerializeToString,
+                request_serializer=Reddit__pb2.PostRequest.SerializeToString,
                 response_deserializer=Reddit__pb2.Post.FromString,
                 )
         self.CreateComment = channel.unary_unary(
@@ -177,7 +177,7 @@ def add_RedditServiceServicer_to_server(servicer, server):
             ),
             'RetrievePostContent': grpc.unary_unary_rpc_method_handler(
                     servicer.RetrievePostContent,
-                    request_deserializer=Reddit__pb2.User.FromString,
+                    request_deserializer=Reddit__pb2.PostRequest.FromString,
                     response_serializer=Reddit__pb2.Post.SerializeToString,
             ),
             'CreateComment': grpc.unary_unary_rpc_method_handler(
@@ -305,7 +305,7 @@ class RedditService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/RedditService/RetrievePostContent',
-            Reddit__pb2.User.SerializeToString,
+            Reddit__pb2.PostRequest.SerializeToString,
             Reddit__pb2.Post.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

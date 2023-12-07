@@ -19,8 +19,8 @@ comments = {
         score=0,
         comment_state=Comment.NORMAL,
         comment_id="1",
-        parent_id="1",
-        under_post=True,
+        parent_post_id="1",
+        parent_comment_id="none",
     ),
     "2": Comment(
         text="This is the second comment",
@@ -28,8 +28,8 @@ comments = {
         score=5,
         comment_state=Comment.NORMAL,
         comment_id="2",
-        parent_id="1",
-        under_post=True,
+        parent_post_id="1",
+        parent_comment_id="none",
     ),
     "3": Comment(
         text="This is the third comment",
@@ -37,7 +37,7 @@ comments = {
         score=10,
         comment_state=Comment.NORMAL,
         comment_id="3",
-        parent_id="1",
-        under_post=True,
+        parent_post_id="1",
+        parent_comment_id="1",
     ),
 }

@@ -5,7 +5,7 @@ service RedditService {
   rpc UpvotePost(PostRequest) returns (Post);
   rpc DownvotePost(PostRequest) returns (Post);
   rpc RetrieveAllPosts(PostRequest) returns (PostResponse);
-  rpc RetrievePostContent(User) returns (Post);
+  rpc RetrievePostContent(PostRequest) returns (Post);
   rpc CreateComment(Comment) returns (Comment);
   rpc UpvoteComment(CommentRequest) returns (Comment);
   rpc DownvoteComment(CommentRequest) returns (Comment);
@@ -49,8 +49,8 @@ message Comment {
   State comment_state = 4;
   int64 publication_date = 5;
   string comment_id = 6;
-  string parent_id = 7;
-  bool under_post = 8;
+  string parent_post_id = 7;
+  string parent_comment_id = 8;
 }
 
 message Subreddit {
