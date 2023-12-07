@@ -1,14 +1,10 @@
 syntax = "proto3";
 
-import "User.proto";
-import "Post.proto";
-import "Comment.proto";
-import "Subreddit.proto";  // if applicable
-
 service RedditService {
   rpc CreatePost(Post) returns (Post);
-  rpc UpvotePost(Post) returns (Post);
-  rpc DownvotePost(Post) returns (Post);
+  rpc UpvotePost(PostRequest) returns (Post);
+  rpc DownvotePost(PostRequest) returns (Post);
+  rpc RetrieveAllPosts(PostRequest) returns (PostResponse);
   rpc RetrievePostContent(User) returns (Post);
   rpc CreateComment(Comment) returns (Comment);
   rpc UpvoteComment(Comment) returns (Comment);
@@ -20,8 +16,56 @@ service RedditService {
   rpc MonitorUpdates(UpdatesRequest) returns (stream UpdatesResponse);
 }
 
+message User {
+  string user_id = 1;
+}
+
+message Post {
+  string title = 1;
+  string text = 2;
+  string video_url = 3;
+  string image_url = 4;
+  string author = 5;
+  int32 score = 6;
+  enum State {
+    NORMAL = 0;
+    LOCKED = 1;
+    HIDDEN = 2;
+  }
+  State post_state = 7;
+  int64 publication_date = 8;
+  string post_id = 9;
+}
+
+message Comment {
+  string text = 1;
+  string author = 2;
+  int32 score = 3;
+  enum State {
+    NORMAL = 0;
+    HIDDEN = 1;
+  }
+  State comment_state = 4;
+  int64 publication_date = 5;
+}
+
+message Subreddit {
+  string name = 1;
+  enum Visibility {
+    PUBLIC = 0;
+    PRIVATE = 1;
+    HIDDEN = 2;
+  }
+  Visibility visibility = 2;
+  repeated string tags = 3;
+}
+
 message PostRequest {
   string post_id = 1;
+}
+
+message PostResponse {
+  repeated Post posts = 1;
 }
 
 message UpvotedCommentsResponse {
