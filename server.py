@@ -4,7 +4,7 @@ from concurrent import futures
 import grpc
 
 from dummy_data import comments, posts
-from helper import retrive_top_n_comments
+from helper import expand_comment_branch, retrive_top_n_comments
 from Reddit_pb2 import (
     Comment,
     CommentBranchRequest,
@@ -79,7 +79,7 @@ class RedditServicer(RedditServiceServicer):
         )
 
     def ExpandCommentBranch(self, request, context):
-        pass
+        return expand_comment_branch(request.comment_id, int(request.n))
 
 
 def serve():

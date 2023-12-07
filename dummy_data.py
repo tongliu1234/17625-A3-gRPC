@@ -40,4 +40,13 @@ comments = {
         parent_post_id="1",
         parent_comment_id="1",
     ),
+    "4": Comment(
+        text="This is the third comment",
+        author="user3",
+        score=10,
+        comment_state=Comment.NORMAL,
+        comment_id="4",
+        parent_post_id="1",
+        parent_comment_id="3",
+    ),
 }
