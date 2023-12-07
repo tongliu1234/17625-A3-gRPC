@@ -54,9 +54,14 @@ class RedditServiceStub(object):
                 request_serializer=Reddit__pb2.Comment.SerializeToString,
                 response_deserializer=Reddit__pb2.Comment.FromString,
                 )
+        self.RetrieveAllComments = channel.unary_unary(
+                '/RedditService/RetrieveAllComments',
+                request_serializer=Reddit__pb2.PostRequest.SerializeToString,
+                response_deserializer=Reddit__pb2.CommentResponse.FromString,
+                )
         self.RetrieveUpvotedComments = channel.unary_unary(
                 '/RedditService/RetrieveUpvotedComments',
-                request_serializer=Reddit__pb2.PostRequest.SerializeToString,
+                request_serializer=Reddit__pb2.PostRequest2.SerializeToString,
                 response_deserializer=Reddit__pb2.UpvotedCommentsResponse.FromString,
                 )
         self.ExpandCommentBranch = channel.unary_unary(
@@ -117,6 +122,12 @@ class RedditServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def DownvoteComment(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def RetrieveAllComments(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -184,9 +195,14 @@ def add_RedditServiceServicer_to_server(servicer, server):
                     request_deserializer=Reddit__pb2.Comment.FromString,
                     response_serializer=Reddit__pb2.Comment.SerializeToString,
             ),
+            'RetrieveAllComments': grpc.unary_unary_rpc_method_handler(
+                    servicer.RetrieveAllComments,
+                    request_deserializer=Reddit__pb2.PostRequest.FromString,
+                    response_serializer=Reddit__pb2.CommentResponse.SerializeToString,
+            ),
             'RetrieveUpvotedComments': grpc.unary_unary_rpc_method_handler(
                     servicer.RetrieveUpvotedComments,
-                    request_deserializer=Reddit__pb2.PostRequest.FromString,
+                    request_deserializer=Reddit__pb2.PostRequest2.FromString,
                     response_serializer=Reddit__pb2.UpvotedCommentsResponse.SerializeToString,
             ),
             'ExpandCommentBranch': grpc.unary_unary_rpc_method_handler(
@@ -346,6 +362,23 @@ class RedditService(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def RetrieveAllComments(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/RedditService/RetrieveAllComments',
+            Reddit__pb2.PostRequest.SerializeToString,
+            Reddit__pb2.CommentResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def RetrieveUpvotedComments(request,
             target,
             options=(),
@@ -357,7 +390,7 @@ class RedditService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/RedditService/RetrieveUpvotedComments',
-            Reddit__pb2.PostRequest.SerializeToString,
+            Reddit__pb2.PostRequest2.SerializeToString,
             Reddit__pb2.UpvotedCommentsResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

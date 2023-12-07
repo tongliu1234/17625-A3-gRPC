@@ -9,7 +9,8 @@ service RedditService {
   rpc CreateComment(Comment) returns (Comment);
   rpc UpvoteComment(Comment) returns (Comment);
   rpc DownvoteComment(Comment) returns (Comment);
-  rpc RetrieveUpvotedComments(PostRequest) returns (UpvotedCommentsResponse);
+  rpc RetrieveAllComments(PostRequest) returns (CommentResponse);
+  rpc RetrieveUpvotedComments(PostRequest2) returns (UpvotedCommentsResponse);
   rpc ExpandCommentBranch(CommentBranchRequest) returns (CommentBranchResponse);
   
   // Extra Credit
@@ -47,6 +48,9 @@ message Comment {
   }
   State comment_state = 4;
   int64 publication_date = 5;
+  string comment_id = 6;
+  string parent_id = 7;
+  bool under_post = 8;
 }
 
 message Subreddit {
@@ -68,13 +72,22 @@ message PostResponse {
   repeated Post posts = 1;
 }
 
+message CommentResponse {
+  repeated Comment comments = 1;
+}
+
+message PostRequest2 {
+  string post_id = 1;
+  string n = 2;
+}
+
 message UpvotedCommentsResponse {
   repeated Comment upvoted_comments = 1;
 }
 
 message CommentBranchRequest {
   string comment_id = 1;
-  int32 depth = 2;
+  int32 n = 2;
 }
 
 message CommentBranchResponse {

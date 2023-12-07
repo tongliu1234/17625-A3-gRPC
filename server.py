@@ -3,10 +3,13 @@ from concurrent import futures
 
 import grpc
 
+from dummy_data import comments, posts
+from helper import retrive_top_n_comments
 from Reddit_pb2 import (
     Comment,
     CommentBranchRequest,
     CommentBranchResponse,
+    CommentResponse,
     Post,
     PostResponse,
     UpdatesRequest,
@@ -14,20 +17,6 @@ from Reddit_pb2 import (
     UpvotedCommentsResponse,
 )
 from Reddit_pb2_grpc import RedditServiceServicer, add_RedditServiceServicer_to_server
-
-# Dummy in-memory storage
-posts = {
-    "1": Post(
-        title="First post(Default)",
-        text="This is the first post",
-        author="user1",
-        video_url="#",
-        score=0,
-        post_state=Post.NORMAL,
-        post_id="1",
-    ),
-}
-comments = {}
 
 
 class RedditServicer(RedditServiceServicer):
@@ -53,6 +42,41 @@ class RedditServicer(RedditServiceServicer):
         post = posts[request.post_id]
         post.score -= 1
         return post
+
+    def RetrieveAllComments(self, request, context):
+        return CommentResponse(comments=[comment for comment in comments.values()])
+
+    def RetrievePostContent(self, request, context):
+        # return posts[request.post_id]
+        pass
+
+    def CreateComment(self, request, context):
+        # Assuming a unique comment_id is generated for each comment
+        comment_id = str(len(comments) + 1)
+        request.comment_id = comment_id
+        comments[comment_id] = request
+        return request
+
+    def UpvoteComment(self, request, context):
+        pass
+
+    def DownvoteComment(self, request, context):
+        pass
+
+    def RetrieveUpvotedComments(self, request, context):
+        # Retrieve list of comments under post
+        l = [
+            comment
+            for comment in comments.values()
+            if comment.under_post and comment.parent_id == request.post_id
+        ]
+        # print(bubble_sort(l, 2))
+        return UpvotedCommentsResponse(
+            upvoted_comments=retrive_top_n_comments(l, int(request.n))
+        )
+
+    def ExpandCommentBranch(self, request, context):
+        pass
 
 
 def serve():
