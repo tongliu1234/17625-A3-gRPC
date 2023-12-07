@@ -7,8 +7,8 @@ service RedditService {
   rpc RetrieveAllPosts(PostRequest) returns (PostResponse);
   rpc RetrievePostContent(User) returns (Post);
   rpc CreateComment(Comment) returns (Comment);
-  rpc UpvoteComment(Comment) returns (Comment);
-  rpc DownvoteComment(Comment) returns (Comment);
+  rpc UpvoteComment(CommentRequest) returns (Comment);
+  rpc DownvoteComment(CommentRequest) returns (Comment);
   rpc RetrieveAllComments(PostRequest) returns (CommentResponse);
   rpc RetrieveUpvotedComments(PostRequest2) returns (UpvotedCommentsResponse);
   rpc ExpandCommentBranch(CommentBranchRequest) returns (CommentBranchResponse);
@@ -70,6 +70,10 @@ message PostRequest {
 
 message PostResponse {
   repeated Post posts = 1;
+}
+
+message CommentRequest {
+  string comment_id = 1;
 }
 
 message CommentResponse {

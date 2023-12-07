@@ -46,12 +46,12 @@ class RedditServiceStub(object):
                 )
         self.UpvoteComment = channel.unary_unary(
                 '/RedditService/UpvoteComment',
-                request_serializer=Reddit__pb2.Comment.SerializeToString,
+                request_serializer=Reddit__pb2.CommentRequest.SerializeToString,
                 response_deserializer=Reddit__pb2.Comment.FromString,
                 )
         self.DownvoteComment = channel.unary_unary(
                 '/RedditService/DownvoteComment',
-                request_serializer=Reddit__pb2.Comment.SerializeToString,
+                request_serializer=Reddit__pb2.CommentRequest.SerializeToString,
                 response_deserializer=Reddit__pb2.Comment.FromString,
                 )
         self.RetrieveAllComments = channel.unary_unary(
@@ -187,12 +187,12 @@ def add_RedditServiceServicer_to_server(servicer, server):
             ),
             'UpvoteComment': grpc.unary_unary_rpc_method_handler(
                     servicer.UpvoteComment,
-                    request_deserializer=Reddit__pb2.Comment.FromString,
+                    request_deserializer=Reddit__pb2.CommentRequest.FromString,
                     response_serializer=Reddit__pb2.Comment.SerializeToString,
             ),
             'DownvoteComment': grpc.unary_unary_rpc_method_handler(
                     servicer.DownvoteComment,
-                    request_deserializer=Reddit__pb2.Comment.FromString,
+                    request_deserializer=Reddit__pb2.CommentRequest.FromString,
                     response_serializer=Reddit__pb2.Comment.SerializeToString,
             ),
             'RetrieveAllComments': grpc.unary_unary_rpc_method_handler(
@@ -339,7 +339,7 @@ class RedditService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/RedditService/UpvoteComment',
-            Reddit__pb2.Comment.SerializeToString,
+            Reddit__pb2.CommentRequest.SerializeToString,
             Reddit__pb2.Comment.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
@@ -356,7 +356,7 @@ class RedditService(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/RedditService/DownvoteComment',
-            Reddit__pb2.Comment.SerializeToString,
+            Reddit__pb2.CommentRequest.SerializeToString,
             Reddit__pb2.Comment.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

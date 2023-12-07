@@ -58,10 +58,14 @@ class RedditServicer(RedditServiceServicer):
         return request
 
     def UpvoteComment(self, request, context):
-        pass
+        comment = comments[request.comment_id]
+        comment.score += 1
+        return comment
 
     def DownvoteComment(self, request, context):
-        pass
+        comment = comments[request.comment_id]
+        comment.score -= 1
+        return comment
 
     def RetrieveUpvotedComments(self, request, context):
         # Retrieve list of comments under post
