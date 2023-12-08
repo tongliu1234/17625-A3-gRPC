@@ -46,8 +46,8 @@ class RedditApiClient:
     def expand_comment_branch(self, comment_branch_request):
         return self.stub.ExpandCommentBranch(comment_branch_request)
 
-    # def monitor_updates(self, updates_request):
-    #     return self.stub.MonitorUpdates(updates_request)
+    def monitor_updates(self, updates_request):
+        return self.stub.MonitorUpdates(updates_request)
 
     def close(self):
         self.channel.close()

@@ -109,6 +109,25 @@ class RedditServicer(RedditServiceServicer):
     def ExpandCommentBranch(self, request, context):
         return expand_comment_branch(request.comment_id, int(request.n))
 
+    def MonitorUpdates(self, request, context):
+        post_id = request.post_id
+        comment_ids = request.comment_ids
+        while True:
+            time.sleep(1)
+            post_score = posts[post_id].score if post_id in posts else 0
+            comment_updates = [
+                {"comment_id": comment_id, "score": comments[comment_id].score}
+                for comment_id in comment_ids
+                if comment_id in comments
+            ]
+            yield UpdatesResponse(
+                post_score=post_score, comment_updates=comment_updates
+            )
+
+
+def serve():
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
