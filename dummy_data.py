@@ -41,7 +41,7 @@ comments = {
         parent_comment_id="1",
     ),
     "4": Comment(
-        text="This is the third comment",
+        text="This is the forth comment",
         author="user3",
         score=10,
         comment_state=Comment.NORMAL,

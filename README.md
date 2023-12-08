@@ -4,6 +4,10 @@ Name: Tong Liu
 
 AndrewID: tl3
 
+Assignment: A3-gRPC		
+
+Language:Python
+
 github-link:https://github.com/tongliu1234/17625-A3-gRPC
 
 
@@ -63,7 +67,7 @@ github-link:https://github.com/tongliu1234/17625-A3-gRPC
 
    
 
-4. **Subreddit**(extra credit)
+4. **Subreddit**(Extra Credit)
 
    ```protobuf
    message Subreddit {
@@ -171,9 +175,174 @@ A straightforward in-memory storage approach is employed as the backend for stor
 
 #### 4.Links 
 
-Server: 
+Server: https://github.com/tongliu1234/17625-A3-gRPC/blob/main/server.py
 
+Client: https://github.com/tongliu1234/17625-A3-gRPC/blob/main/client.py
+
+Mock_object: https://github.com/tongliu1234/17625-A3-gRPC/blob/main/mock_object.py
+
+Test_high_level_func: https://github.com/tongliu1234/17625-A3-gRPC/blob/main/test_high_level_func.py
+
+Proto: https://github.com/tongliu1234/17625-A3-gRPC/blob/main/Reddit.proto
+
+Backend-storage:https://github.com/tongliu1234/17625-A3-gRPC/blob/main/dummy_data.py
+
+
+
+#### 5. Extra Credit
+
+1. Data Model(5pts)
+
+   Subreddit - note that this portion will require changing other PBs (Post, at the very least)
+   ○ Subreddits have a human-readable name
+   ○ Posts belong to exactly one subreddit
+   ○ Subreddits can be public, private, or hidden
+   ○ Subreddits can define a set of tags that are attached to posts
+
+   ```protobuf
+   message Subreddit {
+     string name = 1;
+     enum Visibility {
+       PUBLIC = 0;
+       PRIVATE = 1;
+       HIDDEN = 2;
+     }
+     Visibility visibility = 2;
+     repeated string tags = 3;
+   }
+   ```
+
+   
+
+2. Service Design(5pts)
+
+   Monitor updates - client initiates the call with a post, with ability to add comment IDs later in a stream.
+   The server returns a stream of score updates for the post and the comments.
+
+   ```protobuf
+   service RedditService {
+     ...
+     
+     // Extra Credit
+     rpc MonitorUpdates(UpdatesRequest) returns (stream UpdatesResponse);
+   }
+   ```
+
+   
+
+3. Implementation
+
+   ● Implement the server portion of the extra credit API above (5pts)
+
+   Server: https://github.com/tongliu1234/17625-A3-gRPC/blob/main/server.py
+
+   ```python
+   class RedditServicer(RedditServiceServicer):
+     # ... Other API
+   
+     def MonitorUpdates(self, request, context):
+           post_id = request.post_id
+           comment_ids = request.comment_ids
+           while True:
+               time.sleep(1)
+               post_score = posts[post_id].score if post_id in posts else 0
+               comment_updates = [
+                   {"comment_id": comment_id, "score": comments[comment_id].score}
+                   for comment_id in comment_ids
+                   if comment_id in comments
+               ]
+               yield UpdatesResponse(
+                   post_score=post_score, comment_updates=comment_updates
+               )
+   ```
+
+   
+
+   ● Implement the client portion of the extra credit API above (5pts).
+
+   Client: https://github.com/tongliu1234/17625-A3-gRPC/blob/main/client.py
+
+   ```python
+   class RedditApiClient:
+       def __init__(self, server_address):
+           self.channel = grpc.insecure_channel(server_address)
+           self.stub = RedditServiceStub(self.channel)
+           
+       #... Other API
+       
+       def monitor_updates(self, updates_request):
+           return self.stub.MonitorUpdates(updates_request)
+   
+       def close(self):
+           self.channel.close()
+   
+   ```
+
+   
+
+4. Testing(5pts)
+
+   use Postman to call your API (1pt per API), take a screenshot of the response
+
+   
+
+   ● Create a Post.
+
+   ![](./screenshots/Create-Post.png)
+
+   
+
+   ● Upvote or downvote a Post
+
+   ![](./screenshots/Upvote-Post.png)
+
+   ![](./screenshots/Downvote-Post.png)
+
+   
+
+   ● Retrieve Post content
+
+   ![](./screenshots/Retrieve-Post.png)
+
+   
+
+   ● Create a Comment
+
+   ![](./screenshots/Create-Comment.png)
+
+   
+
+   ● Upvote or downvote a Comment
+
+   ![](./screenshots/Upvote-Comment.png)
+
+   ![](./screenshots/Downvote-comment.png)
+
+   
+
+   ● Retrieving a list of N most upvoted comments under a post, where N is a parameter to the call. The
+   returned result should indicate whether there are replies under those comments.
+
+   ![](./screenshots/Retrieve-n-top-com.png)
+
+   
+
+   ● Expand a comment branch. This allows to open most N most upvoted comments under a given
+   comment, alongside with N most upvoted comments under those comments. Essentially, a tree of depth 2.
+
+   ![](./screenshots/expand-com-branch.png)
+
+
+
+5.Commands
+
+```
 python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. Reddit.proto
 
 python server.py
+
+python client.py
+```
+
+
 
