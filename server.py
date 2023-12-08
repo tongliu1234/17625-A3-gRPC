@@ -33,18 +33,36 @@ class RedditServicer(RedditServiceServicer):
         return PostResponse(posts=[post for post in posts.values()])
 
     def UpvotePost(self, request, context):
-        # print(request)
-        post = posts[request.post_id]
-        post.score += 1
-        return post
+        post_id = request.post_id
+        if post_id in posts:
+            post = posts[post_id]
+            post.score += 1
+            return post
+        else:
+            context.set_code(grpc.StatusCode.NOT_FOUND)
+            context.set_details("Post not found")
+            return Post()
 
     def DownvotePost(self, request, context):
-        post = posts[request.post_id]
-        post.score -= 1
-        return post
+        post_id = request.post_id
+
+        if post_id in posts:
+            post = posts[post_id]
+            post.score -= 1
+            return post
+        else:
+            context.set_code(grpc.StatusCode.NOT_FOUND)
+            context.set_details("Post not found")
+            return Post()
 
     def RetrievePostContent(self, request, context):
-        return posts[request.post_id]
+        post_id = request.post_id
+        if post_id in posts:
+            return posts[post_id]
+        else:
+            context.set_code(grpc.StatusCode.NOT_FOUND)
+            context.set_details("Post not found")
+            return Post()
 
     def CreateComment(self, request, context):
         # Assuming a unique comment_id is generated for each comment
@@ -57,14 +75,24 @@ class RedditServicer(RedditServiceServicer):
         return CommentResponse(comments=[comment for comment in comments.values()])
 
     def UpvoteComment(self, request, context):
-        comment = comments[request.comment_id]
-        comment.score += 1
-        return comment
+        if request.comment_id not in comments:
+            context.set_code(grpc.StatusCode.NOT_FOUND)
+            context.set_details("Comment not found")
+            return Comment()
+        else:
+            comment = comments[request.comment_id]
+            comment.score += 1
+            return comment
 
     def DownvoteComment(self, request, context):
-        comment = comments[request.comment_id]
-        comment.score -= 1
-        return comment
+        if request.comment_id not in comments:
+            context.set_code(grpc.StatusCode.NOT_FOUND)
+            context.set_details("Comment not found")
+            return Comment()
+        else:
+            comment = comments[request.comment_id]
+            comment.score -= 1
+            return comment
 
     def RetrieveUpvotedComments(self, request, context):
         # Retrieve list of comments under post
